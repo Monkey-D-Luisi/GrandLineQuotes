@@ -1,6 +1,6 @@
 # GrandLineQuotes
 
-GrandLineQuotes is a functional monorepo focused on collecting quotes from *One Piece*. Its modular design makes it easy to reuse as a template for other series or quote sources.
+GrandLineQuotes is a modular monorepo for collecting One Piece quotes. Its design makes it reusable as a template for other series or quote sources.
 
 ## Repository layout
 
