@@ -1,0 +1,16 @@
+@model Admin.Models.Sagas.SagasListViewModel
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var saga in Model.Sagas)
+        {
+            @await Html.PartialAsync("_ListItem", saga)
+        }
+    </tbody>
+</table>

@@ -1,0 +1,20 @@
+@model Admin.Models.Episodes.EpisodesListViewModel
+@{
+    ViewData["Title"] = "Episodes";
+}
+
+<h2>Episodes</h2>
+
+@await Html.PartialAsync("_Filters", Model)
+
+<button class="btn btn-primary mb-3" onclick="openEpisodeModal()">Create Episode</button>
+
+<div id="episodesList">
+    @await Html.PartialAsync("_List", Model)
+</div>
+
+<div class="modal fade" id="episodeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="episodeModalContent"></div>
+    </div>
+</div>

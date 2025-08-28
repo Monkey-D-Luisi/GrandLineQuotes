@@ -1,0 +1,14 @@
+@model Admin.Models.Characters.CharacterListItemViewModel
+
+<tr>
+    <td>@Model.Name</td>
+    <td>@Model.Alias</td>
+    <td class="text-center">
+        <button class="btn btn-link text-warning p-0 me-2" title="Edit" onclick="openCharacterModal(@Model.Id)">
+            <i class="bi bi-pencil-square"></i>
+        </button>
+        <button class="btn btn-link text-danger p-0" title="Delete" onclick="deleteCharacter(@Model.Id)">
+            <i class="bi bi-trash"></i>
+        </button>
+    </td>
+</tr>

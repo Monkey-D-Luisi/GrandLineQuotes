@@ -1,0 +1,17 @@
+@model Admin.Models.Sagas.SagasListViewModel
+@{
+    ViewData["Title"] = "Sagas";
+}
+
+<h2 class="pb-5">Sagas</h2>
+
+<button class="btn btn-primary mb-3 mt-5" onclick="openSagaModal()">Create Saga</button>
+<div id="sagasList">
+    @await Html.PartialAsync("_List", Model)
+</div>
+
+<div class="modal fade" id="sagaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="sagaModalContent"></div>
+    </div>
+</div>

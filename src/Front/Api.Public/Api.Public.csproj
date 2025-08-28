@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.0.1" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.7" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+    <PackageReference Include="Google.Apis.PlayIntegrity.v1" Version="1.70.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.70.0" />
+    <PackageReference Include="Minio" Version="6.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Front\Client\Client.csproj" />
+  </ItemGroup>
+
+        <ItemGroup>
+                <InternalsVisibleTo Include="Api.Public.Tests" />
+        </ItemGroup>
+
+        <ItemGroup>
+          <None Include="appsettings.Local.json" />
+          <None Include="appsettings.Test.json" />
+        </ItemGroup>
+
+</Project>

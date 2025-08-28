@@ -1,0 +1,213 @@
+version: "3.9"
+
+services:
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=${COMPOSE_PROJECT_NAME}_web
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      # ACME Let's Encrypt
+      - --certificatesresolvers.le.acme.email=${ACME_EMAIL}
+      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.le.acme.httpchallenge=true
+      - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
+      # dashboard opcional (desactívalo en prod)
+      - --api.dashboard=true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-le:/letsencrypt
+    labels:
+      - traefik.enable=true
+      # Dashboard protegido sólo para tu IP (opcional). Quita si molesta.
+      - traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN_SUFFIX}`)
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.entrypoints=websecure
+      - traefik.http.routers.traefik.tls.certresolver=le
+    networks: [web]
+
+  mariadb:
+    image: mariadb:10.11
+    environment:
+        - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+        - MYSQL_DATABASE=grandlinequotes
+        - MYSQL_USER=grandlinequotes
+        - MYSQL_PASSWORD=$MYSQL_PASSWORD
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    networks: [internal]
+    ports:
+      - "127.0.0.1:3306:3306"
+    restart: unless-stopped
+
+  minio:
+      image: quay.io/minio/minio:latest
+      command: server /data --console-address ":9001"
+      environment:
+        MINIO_ROOT_USER: $MINIO_ROOT_USER 
+        MINIO_ROOT_PASSWORD: $MINIO_ROOT_PASSWORD 
+      volumes:
+        - minio-data:/data
+      networks: [web, internal]
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=${COMPOSE_PROJECT_NAME}_web
+
+        # API S3
+        - traefik.http.routers.minio.rule=Host(`minio.${DOMAIN_SUFFIX}`)
+        - traefik.http.routers.minio.entrypoints=websecure
+        - traefik.http.routers.minio.tls.certresolver=le
+        - traefik.http.routers.minio.service=minio-s3
+        - traefik.http.services.minio-s3.loadbalancer.server.port=9000
+        - traefik.http.services.minio-s3.loadbalancer.server.scheme=http
+
+        # Consola UI
+        - traefik.http.routers.minio-console.rule=Host(`minio-console.${DOMAIN_SUFFIX}`)
+        - traefik.http.routers.minio-console.entrypoints=websecure
+        - traefik.http.routers.minio-console.tls.certresolver=le
+        - traefik.http.routers.minio-console.service=minio-ui
+        - traefik.http.services.minio-ui.loadbalancer.server.port=9001
+        - traefik.http.services.minio-ui.loadbalancer.server.scheme=http
+      restart: unless-stopped
+
+  backup:
+    build:
+      context: ../../../../
+      dockerfile: src/DevOps/Docker-Linux/Backup/Dockerfile
+    working_dir: /workspace
+    volumes:
+      - ../../../../:/workspace
+    entrypoint: ["bash", "src/Scripts/Test/create-backup.sh"]
+    networks: [internal]
+
+  api:
+    build:
+      context: ./src
+      dockerfile: DevOps/Docker-Linux/Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Test
+      ASPNETCORE_URLS: http://0.0.0.0:5000
+      LuckyPenny__LicenseKey: ${LUCKYPENNY_LICENSE_KEY}
+      Minio__Endpoint: ${MINIO_ENDPOINT}
+      Minio__AccessKey: ${MINIO_ROOT_USER}
+      Minio__SecretKey: ${MINIO_ROOT_PASSWORD}
+      Minio__Secure: ${MINIO_SECURE}
+      ConnectionStrings__grandlinequotes: server=${MYSQL_HOST};port=${MYSQL_PORT};database=grandlinequotes;user=${MYSQL_USER};password=${MYSQL_PASSWORD};Allow User Variables=True;
+    expose: ["5000"]
+    depends_on: [mariadb, minio]
+    networks: [internal]
+    restart: unless-stopped
+
+  admin:
+    build:
+      context: ./src
+      dockerfile: DevOps/Docker-Linux/Admin/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Test
+      ASPNETCORE_URLS: http://0.0.0.0:5001
+      Authentication__Google__ClientId: ${GOOGLE_CLIENT_ID}
+      Authentication__Google__ClientSecret: ${GOOGLE_CLIENT_SECRET}
+      Authentication__Google__AllowedEmail: ${GOOGLE_ALLOWED_EMAIL}
+      MinioPublic__Endpoint: minio.${DOMAIN_SUFFIX}
+      MinioPublic__Secure: ${MINIO_SECURE}
+      LuckyPenny__LicenseKey: ${LUCKYPENNY_LICENSE_KEY}
+      Minio__Endpoint: ${MINIO_ENDPOINT}
+      Minio__AccessKey: ${MINIO_ROOT_USER}
+      Minio__SecretKey: ${MINIO_ROOT_PASSWORD}
+      Minio__Secure: ${MINIO_SECURE}
+      ConnectionStrings__grandlinequotes: server=${MYSQL_HOST};port=${MYSQL_PORT};database=grandlinequotes;user=${MYSQL_USER};password=${MYSQL_PASSWORD};Allow User Variables=True;
+    expose: ["5001"]
+    depends_on: [mariadb, minio]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.admin.rule=Host(`admin.${DOMAIN_SUFFIX}`)
+      - traefik.http.routers.admin.entrypoints=websecure
+      - traefik.http.routers.admin.tls.certresolver=le
+      - traefik.http.services.admin.loadbalancer.server.port=5001
+    networks: [web, internal]
+    restart: unless-stopped
+
+  public:
+    build:
+      context: ./src
+      dockerfile: DevOps/Docker-Linux/Api.Public/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Test
+      ASPNETCORE_URLS: http://0.0.0.0:5002
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      LuckyPenny__LicenseKey: ${LUCKYPENNY_LICENSE_KEY}
+      PlayIntegrity__SessionSecret: ${PLAYINTEGRITY_SESSION_SECRET}
+      Minio__Endpoint: ${MINIO_ENDPOINT}
+      Minio__AccessKey: ${MINIO_ROOT_USER}
+      Minio__SecretKey: ${MINIO_ROOT_PASSWORD}
+      Minio__Secure: ${MINIO_SECURE}
+      Api__HttpHost: ${API_HTTP_HOST}
+    expose: ["5002"]
+    depends_on: [api]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.public.rule=Host(`public.${DOMAIN_SUFFIX}`)
+      - traefik.http.routers.public.entrypoints=websecure
+      - traefik.http.routers.public.tls.certresolver=le
+      - traefik.http.services.public.loadbalancer.server.port=5002
+    networks: [web, internal]
+    restart: unless-stopped
+
+  dozzle:
+    image: amir20/dozzle:latest
+    restart: unless-stopped
+    networks: [web]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.dozzle.rule=Host(`logs.${DOMAIN_SUFFIX}`)
+      - traefik.http.routers.dozzle.entrypoints=websecure
+      - traefik.http.routers.dozzle.tls.certresolver=le
+      - traefik.docker.network=${COMPOSE_PROJECT_NAME}_web
+      # Autenticación básica (cámbialo por algo serio)
+      - traefik.http.middlewares.dozzle-auth.basicauth.users=${DOZZLE_AUTH}
+      - traefik.http.routers.dozzle.middlewares=dozzle-auth@docker
+
+  legal:
+    build:
+        context: ./src
+        dockerfile: DevOps/Docker-Linux/Legal/Dockerfile
+    expose: ["80"]
+    environment:
+        PRIVACY_CONTROLLER_NAME: ${PRIVACY_CONTROLLER_NAME}
+        PRIVACY_CONTACT_EMAIL: ${PRIVACY_CONTACT_EMAIL}
+        PRIVACY_COUNTRY: ${PRIVACY_COUNTRY}
+        PRIVACY_LAST_UPDATED: ${PRIVACY_LAST_UPDATED}
+        APP_PACKAGE_ID: ${APP_PACKAGE_ID}
+        APP_VERSION_NAME: ${APP_VERSION_NAME}
+        APP_VERSION_CODE: ${APP_VERSION_CODE}
+        ANDROID_VERSION_RANGE: ${ANDROID_VERSION_RANGE}
+        IOS_VERSION: ${IOS_VERSION}
+    labels:
+        - traefik.enable=true
+        - traefik.docker.network=${COMPOSE_PROJECT_NAME}_web
+
+        # HTTPS
+        - traefik.http.routers.legal.rule=Host(`legal.${DOMAIN_SUFFIX}`)
+        - traefik.http.routers.legal.entrypoints=websecure
+        - traefik.http.routers.legal.tls.certresolver=le
+        - traefik.http.services.legal.loadbalancer.server.port=80        
+    networks: [web]
+
+volumes:
+  mariadb-data:
+  minio-data:
+  traefik-le:
+
+networks:
+  web:
+    driver: bridge
+  internal:
+    driver: bridge

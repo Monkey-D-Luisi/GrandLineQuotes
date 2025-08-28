@@ -1,0 +1,22 @@
+﻿@model QuotesListViewModel
+
+@{
+    ViewData["Title"] = "Quotes List";
+}
+
+<h2>Quotes</h2>
+
+@await Html.PartialAsync("_Filters", Model)
+
+<button class="btn btn-primary mb-3" onclick="openQuoteModal()">Create New Quote</button>
+
+<div id="quotesList">
+    @await Html.PartialAsync("_List", Model)
+</div>
+
+<div class="modal fade" id="quoteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="quoteModalContent">
+        </div>
+    </div>
+</div>

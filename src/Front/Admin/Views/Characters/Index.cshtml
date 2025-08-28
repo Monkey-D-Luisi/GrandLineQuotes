@@ -1,0 +1,17 @@
+@model Admin.Models.Characters.CharactersListViewModel
+@{
+    ViewData["Title"] = "Characters";
+}
+
+<h2 class="pb-5">Characters</h2>
+
+<button class="btn btn-primary mb-3 mt-5" onclick="openCharacterModal()">Create Character</button>
+<div id="charactersList">
+    @await Html.PartialAsync("_List", Model)
+</div>
+
+<div class="modal fade" id="characterModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="characterModalContent"></div>
+    </div>
+</div>

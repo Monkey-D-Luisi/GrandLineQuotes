@@ -1,0 +1,19 @@
+@model Admin.Models.Sagas.Forms.SagaViewModel
+<div class="modal-header">
+    <h5 class="modal-title">@((Model.Id == 0) ? "Create Saga" : "Edit Saga")</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+    <form id="sagaForm">
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <div class="mb-3">
+            <label class="form-label">Titles</label>
+            @await Html.PartialAsync("~/Views/Quotes/Forms/_LanguageInput.cshtml", ("Titles","Título", Model.Titles.ContainsKey("es") ? Model.Titles["es"] : "", "es", "es"))
+            @await Html.PartialAsync("~/Views/Quotes/Forms/_LanguageInput.cshtml", ("Titles","Title", Model.Titles.ContainsKey("en") ? Model.Titles["en"] : "", "en", "us"))
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary btn-sm" onclick="submitSaga()">Save</button>
+</div>

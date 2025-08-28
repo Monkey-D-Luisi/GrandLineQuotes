@@ -1,0 +1,47 @@
+﻿@model QuotesListViewModel
+
+<form id="quoteFilters" class="row g-3 mb-4" method="get">
+    <div class="col-md-3">
+        <label for="authorFilter" class="form-label">Author</label>
+        <select id="authorFilter" name="authorId" class="form-select">
+            <option value="">All</option>
+            @foreach (var author in Model.Authors
+                        .DistinctBy(a => a.Id)
+                        .OrderBy(a => a.Name))
+            {
+                <option value="@author.Id">
+                    @author.Name
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <label for="arcFilter" class="form-label">Arc</label>
+        <select id="arcFilter" name="arcId" class="form-select">
+            <option value="">All</option>
+            @foreach (var arc in Model.Arcs
+                        .DistinctBy(a => a.Id)
+                        .OrderBy(a => a.Title))
+            {
+                <option value="@arc.Id">
+                    @arc.Title
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <label for="searchTerm" class="form-label">Search</label>
+        <input type="text" name="searchTerm" id="searchTerm" class="form-control" placeholder="Text in quote..." />
+    </div>
+
+    <div class="col-md-3">
+        <label for="isReviewedFilter" class="form-label">Reviewed</label>
+        <select id="isReviewedFilter" name="isReviewed" class="form-select">
+            <option value="">All</option>
+            <option value="true">Reviewed</option>
+            <option value="false">Not reviewed</option>
+        </select>
+    </div>
+</form>

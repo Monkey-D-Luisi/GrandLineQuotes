@@ -1,0 +1,26 @@
+<resources>
+    <string name="home_title">Bienvenido a \nCitas de la Grand Line</string>
+    <string name="home_subtitle">Descubre, busca y filtra tus citas favoritas</string>
+    <string name="home_button_show">Mostrar todas las citas</string>
+    <string name="list_title">Citas de la Grand Line</string>
+    <string name="filter_show">Mostrar filtros</string>
+    <string name="filter_hide">Esconder filtros</string>
+    <string name="filter_search">Buscar</string>
+    <string name="filter_search_placeholder">Buscar una cita</string>
+    <string name="filter_all">Todos los</string>
+    <string name="filter_all_option">Todos</string>
+    <string name="filter_clear">Limpiar</string>
+    <string name="common_noquote">Sin cita</string>
+    <string name="common_notranslation">Sin traducción</string>
+    <string name="common_unknown">Desconocido</string>
+    <string name="common_nooriginal">原文なし</string>
+    <string name="support_donate_action">Apoyar</string>
+    <string name="support_donate_title">Apoya el proyecto ❤️</string>
+    <string name="support_donate_message">Gracias por usar la app. Tu apoyo me ayuda a pagar el hosting y contenido y a seguir añadiendo funciones.
+        Si quieres, ¡invítame a un café! ☕</string>
+    <string name="support_donate_button">Invitar un café</string>
+    <string name="common_cd_back">Atrás</string>
+    <string name="support_rate_action">Valorar</string>
+    <string name="support_share_action">Compartir</string>
+    <string name="support_thanks_title">¡Gracias por usar la app!</string>
+</resources>

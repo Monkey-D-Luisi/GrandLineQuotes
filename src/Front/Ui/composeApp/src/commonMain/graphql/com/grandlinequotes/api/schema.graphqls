@@ -1,0 +1,59 @@
+# This file was generated. Do not edit manually.
+
+schema {
+    query: QuoteQueries
+}
+
+"The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
+directive @cost(
+    "The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc."
+    weight: String!
+) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
+
+type Arc {
+    fillerType: FillerType
+    id: Int
+    saga: Saga
+    sagaId: Int
+    title: String
+}
+
+type Character {
+    id: Int
+    name: String
+}
+
+type Episode {
+    arc: Arc
+    arcId: Int
+    number: Int!
+    title: String
+}
+
+type Quote {
+    author: Character
+    authorId: Int
+    episode: Episode
+    episodeNumber: Int
+    id: Int
+    originalText: String
+    text: String
+    translation: String
+}
+
+type QuoteQueries {
+    quote(id: Int!): Quote!
+    quotes(arcId: Int, authorId: Int, searchTerm: String): [Quote!]!
+}
+
+type Saga {
+    id: Int
+    title: String
+}
+
+enum FillerType {
+    CANON
+    FULL
+    PARTIAL
+    UNDEFINED
+}

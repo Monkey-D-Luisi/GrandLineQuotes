@@ -1,0 +1,23 @@
+query GetQuote($id: Int!) {
+    quote(id: $id) {
+        id
+        originalText
+        text
+        translation
+        author {
+            id
+            name
+        }
+        episode {
+            number
+            title
+            arc {
+                title
+                fillerType
+                saga {
+                    title
+                }
+            }
+        }
+    }
+}

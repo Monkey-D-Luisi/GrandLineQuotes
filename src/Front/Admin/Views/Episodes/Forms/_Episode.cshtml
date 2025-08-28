@@ -1,0 +1,32 @@
+@model Admin.Models.Episodes.Forms.EpisodeViewModel
+<div class="modal-header">
+    <h5 class="modal-title">@((Model.Number == 0) ? "Create Episode" : "Edit Episode")</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+    <form id="episodeForm">
+        <div class="mb-3">
+            <label class="form-label">Number</label>
+            <input class="form-control" name="Number" value="@Model.Number" @(Model.Number != 0 ? "readonly" : "") />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Titles</label>
+            @await Html.PartialAsync("~/Views/Quotes/Forms/_LanguageInput.cshtml", ("Titles","Título", Model.Titles.ContainsKey("es") ? Model.Titles["es"] : "", "es", "es"))
+            @await Html.PartialAsync("~/Views/Quotes/Forms/_LanguageInput.cshtml", ("Titles","Title", Model.Titles.ContainsKey("en") ? Model.Titles["en"] : "", "en", "us"))
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Arc</label>
+            <select class="form-select" name="ArcId">
+                @foreach (var arc in Model.Arcs)
+                {
+                    var title = arc.Titles.ContainsKey(System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName) ? arc.Titles[System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName] : string.Empty;
+                    <option value="@arc.Id" selected="@(arc.Id == Model.ArcId ? "selected" : null)">@title</option>
+                }
+            </select>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary btn-sm" onclick="submitEpisode()">Save</button>
+</div>

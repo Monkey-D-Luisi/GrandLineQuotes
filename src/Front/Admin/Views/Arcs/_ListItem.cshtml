@@ -1,0 +1,15 @@
+@model Admin.Models.Arcs.ArcListItemViewModel
+
+<tr>
+    <td>@Model.Title</td>
+    <td>@Model.SagaTitle</td>
+    <td>@Model.FillerType.GetDisplayName()</td>
+    <td class="text-center">
+        <button class="btn btn-link text-warning p-0 me-2" title="Edit" onclick="openArcModal(@Model.Id)">
+            <i class="bi bi-pencil-square"></i>
+        </button>
+        <button class="btn btn-link text-danger p-0" title="Delete" onclick="deleteArc(@Model.Id)">
+            <i class="bi bi-trash"></i>
+        </button>
+    </td>
+</tr>

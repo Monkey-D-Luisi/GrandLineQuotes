@@ -1,0 +1,10 @@
+<resources>
+    <plural name="common_author">
+        <item quantity="one">Autor</item>
+        <item quantity="other">Autores</item>
+    </plural>
+    <plural name="common_arc">
+        <item quantity="one">Arco</item>
+        <item quantity="other">Arcos</item>
+    </plural>
+</resources>

@@ -1,0 +1,12 @@
+﻿@model (string name, string label, string value, string langCode, string flagClass)
+
+<div class="input-group mb-2">
+    <span class="input-group-text">
+        <span class="fi fi-@Model.flagClass"></span>
+    </span>
+    <input type="text"
+           class="form-control form-control-sm"
+           name="@($"{Model.name}[{Model.langCode}]")"
+           placeholder="@Model.label"
+           value="@Model.value" />
+</div>

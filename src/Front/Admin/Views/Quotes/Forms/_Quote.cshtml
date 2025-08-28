@@ -1,0 +1,197 @@
+﻿@using GrandLineQuotes.Client.Abstractions.DTOs.Arcs.Enums
+@using GrandLineQuotes.Client.Abstractions.DTOs.Common
+@model Admin.Models.Quotes.Forms.QuoteViewModel
+<div class="modal-header">
+    <h5 class="modal-title">@((Model.Id == 0) ? "Create Quote" : "Edit Quote")</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+    <form id="quoteForm" enctype="multipart/form-data">
+        <input type="hidden" name="Id" value="@Model.Id" />
+
+        <div class="row mb-2">
+            <div class="col">
+                <label class="form-label">Quote in original alphabet</label>
+                <input type="text" class="form-control form-control-sm" name="OriginalText" value="@Model.OriginalText" />
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col">
+                <label class="form-label">Quote</label>
+                <input type="text" class="form-control form-control-sm" name="Text" value="@Model.Text" />
+            </div>
+        </div>
+
+        <div class="mb-3 border rounded p-2">
+            <label class="form-label">Quote Translations</label>
+            @await Html.PartialAsync("~/Views/Quotes/Forms/_LanguageInput.cshtml",
+                ("Translations", "Cita en Español", Model.Translations.ContainsKey("es") ? Model.Translations["es"] : "", "es", "es"))
+            @await Html.PartialAsync("~/Views/Quotes/Forms/_LanguageInput.cshtml",
+                ("Translations", "Quote in English", Model.Translations.ContainsKey("en") ? Model.Translations["en"] : "", "en", "us"))
+        </div>
+
+        <div class="row mb-2">
+            <div class="col">
+                <label class="form-label">Author</label>
+                <select id="AuthorSelect" class="form-select form-select-sm" name="AuthorId">
+                    @Html.Raw($"<option value=\"0\"{(Model.AuthorId == 0 ? " selected" : "")}>Select one</option>")
+                    @foreach (var author in Model.Authors)
+                    {
+                        var selectedAttr = Model.AuthorId == author.Id ? " selected" : "";
+                        @Html.Raw($"<option value=\"{author.Id}\"{selectedAttr}>{author.Name}</option>")
+                    }
+                    <option value="-1">+ Add new author</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-2" id="NewAuthorInput" style="display: none;">
+            <div class="col">
+                <label class="form-label">New Author Name</label>
+                <input type="text" class="form-control form-control-sm" name="NewAuthorName" />
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col">
+                <label class="form-label">Episode</label>
+                <select id="EpisodeSelect" class="form-select form-select-sm" name="EpisodeNumber">
+                    @Html.Raw($"<option value=\"0\"{(Model.EpisodeNumber == 0 ? " selected" : "")}>Select one</option>")
+                    @foreach (var episode in Model.Episodes)
+                    {
+                        var selectedAttr = Model.EpisodeNumber == episode.Number ? " selected" : "";
+                        @Html.Raw($"<option value=\"{episode.Number}\"{selectedAttr}>{episode.Number} - {episode.Title}</option>")
+                    }
+                    <option value="-1">+ Add new episode</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="NewEpisodeInput" style="display: none;">
+            <div class="mb-3 border rounded p-2">
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <label class="form-label">New Episode #</label>
+                        <input type="number" class="form-control form-control-sm" name="NewEpisodeNumber" />
+                    </div>
+                    <div class="col-8">
+                        <label class="form-label">New Episode Title</label>
+                        @await Html.PartialAsync("~/Views/Quotes/Forms/_LanguageInput.cshtml",
+                            ("NewEpisodeTitles", "Título del nuevo episodio", "", "es", "es"))
+                        @await Html.PartialAsync("~/Views/Quotes/Forms/_LanguageInput.cshtml",
+                            ("NewEpisodeTitles", "New episode title", "", "en", "us"))
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <label class="form-label">Arc</label>
+                    <select id="ArcSelect" class="form-select form-select-sm" name="ArcId">
+                        @Html.Raw($"<option value=\"0\"{(Model.ArcId == 0 ? " selected" : "")}>Select one</option>")
+                        @foreach (var arc in Model.Arcs)
+                        {
+                            var selectedAttr = Model.ArcId == arc.Id ? " selected" : "";
+                            @Html.Raw($"<option value=\"{arc.Id}\"{selectedAttr}>{arc.Title}</option>")
+                        }
+                        <option value="-1">+ Add new arc</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="NewArcInput" style="display: none;">
+                <div class="mb-3 border rounded p-2">
+                    <div class="row mb-2">
+                        <div class="col-8">
+                            <label class="form-label">New Arc Title</label>
+                            @await Html.PartialAsync("~/Views/Quotes/Forms/_LanguageInput.cshtml",
+                                ("NewArcTitles", "Título del nuevo arco", "", "es", "es"))
+                            @await Html.PartialAsync("~/Views/Quotes/Forms/_LanguageInput.cshtml",
+                                ("NewArcTitles", "New arc title", "", "en", "us"))
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label">Filler Type</label>
+                            <select class="form-select form-select-sm" name="NewArcFillerTypeId">
+                                @foreach (var fillerType in Model.FillerTypes)
+                                {
+                                    var selectedAttr = Model.ArcFillerType == fillerType ? " selected" : "";
+                                    @Html.Raw($"<option value=\"{(int)fillerType}\"{selectedAttr}>{fillerType.GetDisplayName()}</option>")
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col">
+                        <label class="form-label">Saga</label>
+                        <select id="SagaSelect" class="form-select form-select-sm" name="SagaId">
+                            @Html.Raw($"<option value=\"0\"{(Model.SagaId == 0 ? " selected" : "")}>Select one</option>")
+                            @foreach (var saga in Model.Sagas)
+                            {
+                                var selectedAttr = Model.SagaId == saga.Id ? " selected" : "";
+                                @Html.Raw($"<option value=\"{saga.Id}\"{selectedAttr}>{saga.Title}</option>")
+                            }
+                            <option value="-1">+ Add new saga</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="NewSagaInput" style="display: none;">
+                    <div class="mb-3 border rounded p-2">
+                        <label class="form-label">New Saga Title</label>
+                        @await Html.PartialAsync("~/Views/Quotes/Forms/_LanguageInput.cshtml",
+                            ("NewSagaTitles", "Título de la nueva saga", "", "es", "es"))
+                        @await Html.PartialAsync("~/Views/Quotes/Forms/_LanguageInput.cshtml",
+                            ("NewSagaTitles", "New saga title", "", "en", "us"))
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Id > 0)
+        {
+            <div class="row mb-2">
+                <div class="col">
+                    <label class="form-label">Video <span class="fi fi-us"></span></label>
+                    <video id="videoPreview" width="100%" height="240" controls>
+                        <source src="@Model.VideoUrl" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="form-text">Current file: @LanguagePath.English/@(Model.Id).mp4</div>
+                </div>
+                <div class="col">
+                    <label class="form-label">Video <span class="fi fi-es"></span></label>
+                    <video id="videoPreviewEs" width="100%" height="240" controls>
+                        <source src="@Model.VideoUrlEs" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="form-text">Current file: @LanguagePath.Spanish/@(Model.Id).mp4</div>
+                </div>
+            </div>
+        }
+
+        <div class="row mb-2">
+            <div class="col">
+                <label class="form-label">Upload Video <span class="fi fi-us"></span></label>
+                <input type="file" id="videoInput" class="form-control form-control-sm" name="VideoFile" accept=".mp4,video/mp4" />
+            </div>
+            <div class="col">
+                <label class="form-label">Upload Video <span class="fi fi-es"></span></label>
+                <input type="file" id="videoInputEs" class="form-control form-control-sm" name="VideoFileEs" accept=".mp4,video/mp4" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer justify-content-between">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="isReviewed" name="IsReviewed" value="true" @(Model.IsReviewed ? "checked" : "") />
+        <label class="form-check-label" for="isReviewed">Reviewed</label>
+    </div>
+    <div>
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="submitQuote()">Save</button>
+    </div>
+</div>

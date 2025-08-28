@@ -1,0 +1,15 @@
+{
+  "name": "GrandLineQuotesSchema",
+  "schemaPath": "src/commonMain/graphql/com/grandlinequotes/api/schema.graphqls",
+  "extensions": {
+    "endpoints": {
+      "api": {
+        "url": "https://grandlinequotes-api-graphql-dev.local:8443/graphql",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "introspect": true
+      }
+    }
+  }
+}

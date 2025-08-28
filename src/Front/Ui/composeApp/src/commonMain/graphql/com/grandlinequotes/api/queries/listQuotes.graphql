@@ -1,0 +1,25 @@
+query ListQuotes($arcId: Int, $authorId: Int, $searchTerm: String) {
+    quotes(authorId: $authorId, arcId: $arcId, searchTerm: $searchTerm) {
+        id
+        originalText
+        text
+        translation
+        author {
+            id
+            name
+        }
+        episode {
+            number
+            title
+            arc {
+                id
+                title
+                fillerType
+                saga {
+                    id
+                    title
+                }
+            }
+        }
+    }
+}

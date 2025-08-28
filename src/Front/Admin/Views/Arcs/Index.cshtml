@@ -1,0 +1,17 @@
+@model Admin.Models.Arcs.ArcsListViewModel
+@{
+    ViewData["Title"] = "Arcs";
+}
+
+<h2 class="pb-5">Arcs</h2>
+
+<button class="btn btn-primary mb-3 mt-5" onclick="openArcModal()">Create Arc</button>
+<div id="arcsList">
+    @await Html.PartialAsync("_List", Model)
+</div>
+
+<div class="modal fade" id="arcModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="arcModalContent"></div>
+    </div>
+</div>

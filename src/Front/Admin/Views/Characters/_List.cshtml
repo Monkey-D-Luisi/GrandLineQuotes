@@ -1,0 +1,17 @@
+@model Admin.Models.Characters.CharactersListViewModel
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Alias</th>
+            <th class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var character in Model.Characters)
+        {
+            @await Html.PartialAsync("_ListItem", character)
+        }
+    </tbody>
+</table>

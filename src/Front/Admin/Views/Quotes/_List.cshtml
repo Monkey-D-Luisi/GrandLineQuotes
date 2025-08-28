@@ -1,0 +1,19 @@
+﻿@model QuotesListViewModel
+
+<table id="quotesTable" class="table table-striped">
+    <thead>
+        <tr>
+            <th>Author</th>
+            <th>Episode</th>
+            <th>Quote</th>
+            <th class="text-center">Reviewed</th>
+            <th class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var quote in Model.Quotes)
+        {
+            @await Html.PartialAsync("_ListItem", quote)
+        }
+    </tbody>
+</table>

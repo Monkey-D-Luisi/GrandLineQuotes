@@ -1,0 +1,15 @@
+@model Admin.Models.Episodes.EpisodeListItemViewModel
+
+<tr>
+    <td>@Model.Number</td>
+    <td>@Model.Title</td>
+    <td>@Model.ArcTitle</td>
+    <td class="text-center">
+        <button class="btn btn-link text-warning p-0 me-2" title="Edit" onclick="openEpisodeModal(@Model.Number)">
+            <i class="bi bi-pencil-square"></i>
+        </button>
+        <button class="btn btn-link text-danger p-0" title="Delete" onclick="deleteEpisode(@Model.Number)">
+            <i class="bi bi-trash"></i>
+        </button>
+    </td>
+</tr>

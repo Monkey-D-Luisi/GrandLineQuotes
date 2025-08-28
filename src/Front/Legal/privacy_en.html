@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Privacy Policy - Grand Line Quotes</title>
+    <style>
+        body {
+            font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;
+            line-height: 1.55;
+            margin: 0;
+            background: #faf7fb;
+            color: #1b1b1f
+        }
+
+        main {
+            max-width: 860px;
+            margin: auto;
+            padding: 24px
+        }
+
+        h1 {
+            font-size: clamp(1.8rem,3.5vw,2.4rem);
+            margin: .25em 0
+        }
+
+        h2 {
+            margin-top: 2rem
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px 22px;
+            box-shadow: 0 1px 12px rgba(16,24,40,.06)
+        }
+
+        a {
+            color: #6750a4
+        }
+
+        small {
+            color: #666
+        }
+
+        ul {
+            padding-left: 1.25rem
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Privacy Policy</h1>
+        <div class="card">
+            <p><strong>Grand Line Quotes</strong> (the App) is a personal-use application without a user account. This policy explains what data is processed, for what purpose and how you can contact us.</p>
+            <p><small>Last updated: ${PRIVACY_LAST_UPDATED}</small></p>
+        </div>
+
+        <h2>Controller</h2>
+        <p>
+            Name: <strong>${PRIVACY_CONTROLLER_NAME}</strong><br>
+            Contact email: <a href="mailto:${PRIVACY_CONTACT_EMAIL}">${PRIVACY_CONTACT_EMAIL}</a><br>
+            Country/Region: <strong>${PRIVACY_COUNTRY}</strong>
+        </p>
+
+        <h2>Data processed by the App</h2>
+        <ul>
+            <li><strong>Technical data</strong> (essential): app version (${APP_VERSION_NAME}, code ${APP_VERSION_CODE}), package identifier (<code>${APP_PACKAGE_ID}</code>), system version (Android ${ANDROID_VERSION_RANGE} / iOS ${IOS_VERSION}), language and crash/performance logs provided by Google/Apple to improve stability.</li>
+            <li><strong>Displayed content</strong>: quotes and metadata served from your API (no personal identification).</li>
+        </ul>
+        <p><em>No</em> accounts or profiles are created, <em>no</em> sensitive permissions are requested and <em>no</em> precise location is collected.</p>
+
+        <h2>Purchases and donations</h2>
+        <p>If you choose to support the project through Google Play, payments are handled via <strong>Google Play Billing</strong>. The App does not access card numbers or bank data. Google acts as the payment processor under its own policies.</p>
+
+        <h2>Legal basis</h2>
+        <ul>
+            <li><strong>Performance of the service</strong>: to display content and operate the App.</li>
+            <li><strong>Legitimate interest</strong>: stability/diagnostic metrics to detect and fix issues.</li>
+        </ul>
+
+        <h2>Retention</h2>
+        <p>Technical logs (crashes/ANR) are kept for Google's/Apple's standard periods and then aggregated or deleted. No personal history is stored within the App.</p>
+
+        <h2>Sharing</h2>
+        <p>Technical data is shared with providers strictly necessary for the App to function (e.g., Google Play Services, backend hosting and video CDN). Personal data is not sold.</p>
+
+        <h2>Your rights</h2>
+        <p>You may request information, rectification or deletion of data that identifies you (if any) by writing to <a href="mailto:${PRIVACY_CONTACT_EMAIL}">${PRIVACY_CONTACT_EMAIL}</a>. If you are in the EU/EEA, you can also complain to your data protection authority.</p>
+
+        <h2>Children</h2>
+        <p>The App is intended for users of all ages, including children under 13, and requires no registration nor collects direct personal information.</p>
+        <p>Only minimal technical data is collected to ensure operation. If you are a parent or guardian and wish to exercise rights over a minor's data, contact <a href="mailto:${PRIVACY_CONTACT_EMAIL}">${PRIVACY_CONTACT_EMAIL}</a>.</p>
+
+        <h2>Changes to this policy</h2>
+        <p>We will publish modifications at this same URL and indicate the date of the latest update.</p>
+
+        <hr>
+        <p><small>If you have questions, write to <a href="mailto:${PRIVACY_CONTACT_EMAIL}">${PRIVACY_CONTACT_EMAIL}</a>.</small></p>
+    </main>
+</body>
+</html>

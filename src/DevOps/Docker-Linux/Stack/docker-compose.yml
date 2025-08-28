@@ -1,0 +1,156 @@
+version: '3.8'
+services:
+    traefik:
+        image: traefik:v2.9
+        container_name: traefik
+        command:
+            - "--providers.docker=true"
+            - "--entrypoints.web.address=:8080"
+            - "--entrypoints.websecure.address=:8443"
+            - "--entrypoints.websecure.http.tls=true" 
+            - "--entrypoints.web.http.redirections.entryPoint.to=websecure" 
+            - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+            - "--entrypoints.mysql.address=:3306"
+            - "--api.dashboard=true"
+        ports:
+            - "8080:8080" 
+            - "8443:8443" 
+        volumes:
+            - "/var/run/docker.sock:/var/run/docker.sock:ro"
+        labels:
+            - "traefik.http.routers.dashboard.rule=Host(`grandlinequotes-traefik.localhost`)"
+            - "traefik.http.routers.dashboard.service=api@internal"
+            - "traefik.http.routers.dashboard.entrypoints=websecure"
+            - "traefik.http.routers.dashboard.tls=true"
+        networks:
+            - public-dev
+
+    api-dev:
+        build:
+            context: ../../..
+            dockerfile: DevOps/Docker-Linux/Api/Dockerfile
+        container_name: api-dev
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Local
+            - ASPNETCORE_URLS=http://+:5000
+        labels:
+            - "traefik.http.routers.api-dev.rule=Host(`grandlinequotes-api-dev.local`)"
+            - "traefik.http.services.api-dev.loadbalancer.server.port=5000"
+        networks:
+            - public-dev
+        ports:
+            - "5000:5000"
+
+    admin-dev:
+        build:
+            context: ../../..
+            dockerfile: DevOps/Docker-Linux/Admin/Dockerfile
+        container_name: admin-dev
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Local
+            - ASPNETCORE_URLS=http://+:5001
+        labels:
+            - "traefik.http.routers.admin-dev.rule=Host(`grandlinequotes-admin-dev.local`)"
+            - "traefik.http.services.admin-dev.loadbalancer.server.port=5001"
+        networks:
+            - public-dev
+        ports:
+            - "5001:5001"
+
+    api-public-dev:
+        build:
+            context: ../../..
+            dockerfile: DevOps/Docker-Linux/Api.Public/Dockerfile
+        container_name: api-public-dev
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Local
+            - ASPNETCORE_URLS=http://+:5002
+        labels:
+            - "traefik.http.routers.api-public-dev.rule=Host(`grandlinequotes-api-public-dev.local`)"
+            - "traefik.http.services.api-public-dev.loadbalancer.server.port=5002"
+        networks:
+            - public-dev
+        ports:
+            - "5002:5002"
+
+    legal-dev:
+        build:
+            context: ../../..
+            dockerfile: DevOps/Docker-Linux/Legal/Dockerfile
+        container_name: legal-dev
+        labels:
+            - "traefik.http.routers.legal-dev.rule=Host(`grandlinequotes-legal-dev.local`)"
+            - "traefik.http.services.legal-dev.loadbalancer.server.port=80"
+        networks:
+            - public-dev
+        ports:
+            - "8081:80"
+
+    mariadb-dev:
+        image: mariadb:10.11
+        container_name: mariadb-dev
+        environment:
+            - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+            - MYSQL_DATABASE=grandlinequotes
+            - MYSQL_USER=grandlinequotes
+            - MYSQL_PASSWORD=$MYSQL_PASSWORD
+        labels:
+            - "traefik.tcp.routers.mariadb.rule=HostSNI(`grandlinequotes-db-dev.local`)"
+            - "traefik.tcp.routers.mariadb.entrypoints=mysql"
+            - "traefik.tcp.routers.mariadb.tls=true"
+            - "traefik.tcp.services.mariadb.loadbalancer.server.port=3306"
+        ports:
+            - "33066:3306"
+        volumes:
+            - mariadb-data:/var/lib/mysql
+        networks:
+            - public-dev
+    
+    minio:
+        build:
+            context: ../../..
+            dockerfile: DevOps/Docker-Linux/Minio/Dockerfile
+        container_name: minio
+        command: server /data --console-address ":9001"
+        labels:
+            - "traefik.http.routers.minio-dev.rule=Host(`grandlinequotes-cdi-dev.local`)"
+            - "traefik.http.services.minio-dev.loadbalancer.server.port=9000"
+            - "traefik.http.routers.minio-console-dev.rule=Host(`grandlinequotes-cdi-console-dev.local`)"
+            - "traefik.http.services.minio-console-dev.loadbalancer.server.port=9001"
+        ports:
+            - "9000:9000" 
+            - "9001:9001" 
+        environment:
+            MINIO_ROOT_USER: $MINIO_ROOT_USER 
+            MINIO_ROOT_PASSWORD: $MINIO_ROOT_PASSWORD 
+        volumes:
+            - minio-data:/data
+        networks:
+            - public-dev
+
+    nginx:
+        build:
+            context: ../../..
+            dockerfile: DevOps/Docker-Linux/Nginx/Dockerfile
+        container_name: 'nginx'
+        hostname: 'nginx'
+        ports:
+            - "9443:9443" 
+        environment:
+            - "VIRTUAL_HOST=grandlinequotes-cdi-dev.local"
+            - "VIRTUAL_PORT=9443"
+        labels:
+            - "traefik.http.routers.nginx.rule=Host(`grandlinequotes-cdi-dev.local`)"
+            - "traefik.http.routers.nginx.entrypoints=websecure"
+            - "traefik.http.services.nginx.loadbalancer.server.port=9443"
+            - "traefik.http.routers.nginx.tls=true"
+        networks:
+            - public-dev
+      
+networks:
+    public-dev:
+        driver: bridge
+
+volumes:
+    mariadb-data:
+    minio-data:

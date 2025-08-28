@@ -1,0 +1,26 @@
+<resources>
+    <string name="home_title">Welcome to \nGrand Line Quotes</string>
+    <string name="home_subtitle">Discover, search and filter your favorite quotes</string>
+    <string name="home_button_show">Show all quotes</string>
+    <string name="list_title">Grand Line Quotes</string>
+    <string name="filter_show">Show filters</string>
+    <string name="filter_hide">Hide filters</string>
+    <string name="filter_search">Search</string>
+    <string name="filter_search_placeholder">Search for a quote</string>
+    <string name="filter_all">All</string>
+    <string name="filter_all_option">All</string>
+    <string name="filter_clear">Clear</string>
+    <string name="common_noquote">No quote</string>
+    <string name="common_notranslation">No translation</string>
+    <string name="common_unknown">Unknown</string>
+    <string name="common_nooriginal">原文なし</string>
+    <string name="support_donate_action">Support</string>
+    <string name="support_donate_title">Support the project ❤️</string>
+    <string name="support_donate_message">Thanks for using the app. Your support helps me cover hosting/content and keep shipping new features.
+        If you’d like, buy me a coffee! ☕</string>
+    <string name="support_donate_button">Buy me a coffee</string>
+    <string name="common_cd_back">Back</string>
+    <string name="support_rate_action">Rate</string>
+    <string name="support_share_action">Share</string>
+    <string name="support_thanks_title">¡Thanks for using the app!</string>
+</resources>

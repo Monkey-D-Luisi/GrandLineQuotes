@@ -1,0 +1,15 @@
+@model Admin.Models.Episodes.EpisodesListViewModel
+
+<form id="episodeFilters" class="row g-3 mb-4" method="get">
+    <div class="col-md-3">
+        <label for="episodeArcFilter" class="form-label">Arc</label>
+        <select id="episodeArcFilter" name="arcId" class="form-select">
+            <option value="">All</option>
+            @foreach (var arc in Model.Arcs)
+            {
+                var title = arc.Titles.ContainsKey(System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName) ? arc.Titles[System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName] : string.Empty;
+                <option value="@arc.Id" selected="@(Model.SelectedArcId == arc.Id ? "selected" : null)">@title</option>
+            }
+        </select>
+    </div>
+</form>

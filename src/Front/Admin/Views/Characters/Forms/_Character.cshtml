@@ -1,0 +1,22 @@
+@model Admin.Models.Characters.Forms.CharacterViewModel
+<div class="modal-header">
+    <h5 class="modal-title">@((Model.Id == 0) ? "Create Character" : "Edit Character")</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+    <form id="characterForm">
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input class="form-control" name="Name" value="@Model.Name" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Alias</label>
+            <input class="form-control" name="Alias" value="@Model.Alias" />
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary btn-sm" onclick="submitCharacter()">Save</button>
+</div>

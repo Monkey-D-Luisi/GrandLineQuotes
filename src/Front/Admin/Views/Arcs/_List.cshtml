@@ -1,0 +1,18 @@
+@model Admin.Models.Arcs.ArcsListViewModel
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Saga</th>
+            <th>Filler Type</th>
+            <th class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var arc in Model.Arcs)
+        {
+            @await Html.PartialAsync("_ListItem", arc)
+        }
+    </tbody>
+</table>

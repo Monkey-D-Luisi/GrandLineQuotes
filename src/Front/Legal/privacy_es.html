@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Política de Privacidad  Grand Line Quotes</title>
+    <style>
+        body {
+            font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;
+            line-height: 1.55;
+            margin: 0;
+            background: #faf7fb;
+            color: #1b1b1f
+        }
+
+        main {
+            max-width: 860px;
+            margin: auto;
+            padding: 24px
+        }
+
+        h1 {
+            font-size: clamp(1.8rem,3.5vw,2.4rem);
+            margin: .25em 0
+        }
+
+        h2 {
+            margin-top: 2rem
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px 22px;
+            box-shadow: 0 1px 12px rgba(16,24,40,.06)
+        }
+
+        a {
+            color: #6750a4
+        }
+
+        small {
+            color: #666
+        }
+
+        ul {
+            padding-left: 1.25rem
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Política de Privacidad</h1>
+        <div class="card">
+            <p><strong>Grand Line Quotes</strong> (la App) es una aplicación de uso personal y sin cuenta de usuario. Esta política explica qué datos se tratan, con qué finalidad y cómo puedes contactar.</p>
+            <p><small>Última actualización: ${PRIVACY_LAST_UPDATED}</small></p>
+        </div>
+
+        <h2>Responsable</h2>
+        <p>
+            Nombre: <strong>${PRIVACY_CONTROLLER_NAME}</strong><br>
+            Email de contacto: <a href="mailto:${PRIVACY_CONTACT_EMAIL}">${PRIVACY_CONTACT_EMAIL}</a><br>
+            País/Región: <strong>${PRIVACY_COUNTRY}</strong>
+        </p>
+
+        <h2>Datos que trata la App</h2>
+        <ul>
+            <li><strong>Datos técnicos</strong> (imprescindibles): versión de la App (${APP_VERSION_NAME}, código ${APP_VERSION_CODE}), identificador del paquete (<code>${APP_PACKAGE_ID}</code>), versión del sistema (Android ${ANDROID_VERSION_RANGE} / iOS ${IOS_VERSION}), idioma y registros de fallos y rendimiento proporcionados por Google/Apple para mejorar la estabilidad.</li>
+            <li><strong>Contenido mostrado</strong>: citas y metadatos servidos desde tu API (sin identificación personal).</li>
+        </ul>
+        <p><em>No</em> se crean cuentas ni perfiles, <em>no</em> se solicitan permisos sensibles y <em>no</em> se recopila ubicación precisa.</p>
+
+        <h2>Compras y donaciones</h2>
+        <p>Si decides apoyar el proyecto desde Google Play, los pagos se gestionan mediante <strong>Google Play Billing</strong>. La App no accede a números de tarjeta ni a datos bancarios. Google actúa como procesador del pago conforme a sus propias políticas.</p>
+
+        <h2>Base legal</h2>
+        <ul>
+            <li><strong>Ejecución del servicio</strong>: para mostrar el contenido y operar la App.</li>
+            <li><strong>Interés legítimo</strong>: métricas de estabilidad/diagnóstico para detectar y corregir fallos.</li>
+        </ul>
+
+        <h2>Conservación</h2>
+        <p>Los registros técnicos (crashes/ANR) se conservan por los periodos estándar de Google/Apple y luego se agregan o eliminan. No se guarda historial personal dentro de la App.</p>
+
+        <h2>Compartición</h2>
+        <p>Se comparten datos técnicos con los proveedores estrictamente necesarios para que la App funcione (p. ej., Google Play Services, alojamiento del backend y CDN de vídeo). No se venden datos personales.</p>
+
+        <h2>Tus derechos</h2>
+        <p>Puedes solicitar información, rectificación o eliminación de datos que te identifiquen (si existieran) escribiendo a <a href="mailto:${PRIVACY_CONTACT_EMAIL}">${PRIVACY_CONTACT_EMAIL}</a>. Si estás en la UE/EEE, también puedes reclamar ante tu autoridad de protección de datos.</p>
+
+        <h2>Menores</h2>
+        <p>La App está pensada para usuarios de todas las edades, incluidos menores de 13 años, y no requiere registro ni recoge información personal directa.</p>
+        <p>Solo se recopilan datos técnicos mínimos para garantizar el funcionamiento. Si eres padre, madre o tutor y deseas ejercer derechos sobre los datos del menor, puedes escribir a <a href="mailto:${PRIVACY_CONTACT_EMAIL}">${PRIVACY_CONTACT_EMAIL}</a>.</p>
+
+        <h2>Cambios de esta política</h2>
+        <p>Publicaremos las modificaciones en esta misma URL e indicaremos la fecha de última actualización.</p>
+
+        <hr>
+        <p><small>Si tienes dudas, escribe a <a href="mailto:${PRIVACY_CONTACT_EMAIL}">${PRIVACY_CONTACT_EMAIL}</a>.</small></p>
+    </main>
+</body>
+</html>

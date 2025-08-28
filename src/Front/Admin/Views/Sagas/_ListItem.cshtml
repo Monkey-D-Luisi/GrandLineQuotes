@@ -1,0 +1,13 @@
+@model Admin.Models.Sagas.SagaListItemViewModel
+
+<tr>
+    <td>@Model.Title</td>
+    <td class="text-center">
+        <button class="btn btn-link text-warning p-0 me-2" title="Edit" onclick="openSagaModal(@Model.Id)">
+            <i class="bi bi-pencil-square"></i>
+        </button>
+        <button class="btn btn-link text-danger p-0" title="Delete" onclick="deleteSaga(@Model.Id)">
+            <i class="bi bi-trash"></i>
+        </button>
+    </td>
+</tr>
