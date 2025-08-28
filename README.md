@@ -1,1 +1,1 @@
-C:/Users/lbahillo/source/repos/GrandLineQuotes/src/README.md
+src/README.md
