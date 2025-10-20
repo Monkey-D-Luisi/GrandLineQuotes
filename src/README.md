@@ -72,7 +72,7 @@ The project supports multiple environments:
 * **dozzle** – Real-time log viewer for Docker containers
 * **backup** – Service for creating database and MinIO backups
 
-Environment variables are loaded from `src/DevOps/Docker-Linux/Stack/.env` (an example is provided in `.env.Example`) with environment-specific overrides in `.env.Test`. To start the Test stack:
+Environment variables are loaded from `src/DevOps/Docker-Linux/Stack/.env` (an example is provided in `src/DevOps/Docker-Linux/Stack/.env.Example`) with environment-specific overrides in `src/DevOps/Docker-Linux/Stack/.env.Test`. To start the Test stack:
 
 ```bash
 cd src/DevOps/Docker-Linux/Stack
