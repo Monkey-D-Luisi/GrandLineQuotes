@@ -135,12 +135,18 @@ Superuser permissions and internet access are required.
 
 ## Backups
 
-`src/Scripts/Test/` contains scripts to export and restore data from MariaDB and MinIO. Each backup is stored under `backups/<timestamp>` at the repository root together with a `backup.log` or `restore.log`. Environment variables are read from `.env` and `.env.Test` (use `src/DevOps/Docker-Linux/Stack/.env.Example` as a template).
+`src/Scripts/Test/` contains `create-backup.sh` and `restore-backup.sh` scripts to export and restore data from MariaDB and MinIO. Each backup is stored under `backups/<timestamp>` at the repository root together with a `backup.log` or `restore.log`. Environment variables are read from `.env` and `.env.Test` (use `src/DevOps/Docker-Linux/Stack/.env.Example` as a template).
 
 To create a backup within the Docker network:
 
 ```bash
 docker compose -f src/DevOps/Docker-Linux/Stack/docker-compose.Test.yml run --rm backup
+```
+
+Or run the script directly:
+
+```bash
+bash src/Scripts/Test/create-backup.sh
 ```
 
 To restore the latest backup:
