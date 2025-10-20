@@ -56,7 +56,7 @@ Kotlin/Compose client. The codebase keeps its multiplatform structure, but only 
 
 The project supports multiple environments:
 
-* **Local** – For local development. Uses `docker-compose.yml` with services like `api-dev`, `admin-dev`, `api-public-dev`, `mariadb-dev`, MinIO and nginx.
+* **Local** – For local development. Uses `docker-compose.yml` with services like `traefik`, `api-dev`, `admin-dev`, `api-public-dev`, `legal-dev`, `mariadb-dev`, `minio`, and `nginx`.
 * **Sandbox** – Used by the automated test script `src/Scripts/Sandbox/run-tests.sh` for running the test suite.
 * **Test** – Production-like environment with Let's Encrypt certificates, consumed by the published Android app.
 
@@ -72,7 +72,7 @@ The project supports multiple environments:
 * **dozzle** – Real-time log viewer for Docker containers
 * **backup** – Service for creating database and MinIO backups
 
-Shared credentials are taken from `.env` (an example is provided in `.env.Example`) and environment-specific values live in `.env.<Environment>`. To start the Test stack:
+Environment variables are loaded from `src/DevOps/Docker-Linux/Stack/.env` (an example is provided in `.env.Example`) with environment-specific overrides in `.env.Test`. To start the Test stack:
 
 ```bash
 cd src/DevOps/Docker-Linux/Stack
@@ -218,11 +218,12 @@ The scripts require `mysqldump`, `mysql` and the MinIO client `mc`.
 The `src/Scripts/Test/deploy-test.sh` script automates deployment to the Test environment:
 
 1. Pulls latest code from the specified branch (defaults to `master`)
-2. Loads environment variables from `.env` and `.env.Test`
-3. Configures firewall rules (ports 80 and 443)
+2. Loads environment variables from `src/DevOps/Docker-Linux/Stack/.env` and `.env.Test`
+3. Configures firewall rules (opens ports 80 and 443 using UFW)
 4. Validates Docker Compose configuration
-5. Builds and starts all services
-6. Performs health checks on all endpoints
+5. Pulls Docker images and builds services
+6. Starts all services with `--remove-orphans` flag
+7. Performs health checks on all endpoints (api, admin, public, minio, minio-console, logs, legal)
 
 Run the deployment script:
 
@@ -230,7 +231,16 @@ Run the deployment script:
 bash src/Scripts/Test/deploy-test.sh
 ```
 
-This script is designed to run on a server with Docker installed and requires sudo permissions for firewall configuration.
+**Environment variables:**
+* `BRANCH` – Git branch to deploy (default: `master`)
+
+**Requirements:**
+* Docker and Docker Compose plugin installed
+* Sudo permissions for firewall configuration
+* Git repository with remote access
+* Configured `.env` and `.env.Test` files with required variables
+
+This script is designed to run on a production server and includes safety checks to validate configuration before deployment.
 
 ## Database Schema
 
