@@ -4,7 +4,7 @@ GrandLineQuotes is a modular monorepo for collecting One Piece quotes. Its desig
 
 ## Repository layout
 
-The solution is split into two top-level folders under `src/`:
+The solution is split into four top-level folders under `src/`:
 
 * **Back** – domain, application and infrastructure layers plus the test projects.
 * **Front** – exposed services and user interfaces.
@@ -88,7 +88,18 @@ cd src/DevOps/Docker-Linux/Stack
 docker compose up --build -d
 ```
 
-This starts development versions of the services accessible at `*.local` domains. No SSL certificates are required.
+This starts development versions of the services with the `-dev` suffix, accessible at `*.local` domains (e.g., `grandlinequotes-api-dev.local`, `grandlinequotes-admin-dev.local`). The environment includes:
+
+* **traefik** – Reverse proxy for local routing
+* **api-dev** – REST API development service
+* **admin-dev** – Administration panel development service
+* **api-public-dev** – Public GraphQL API development service
+* **legal-dev** – Legal/privacy policy static server
+* **mariadb-dev** – Database service
+* **minio** – Object storage service
+* **nginx** – Static file server for MinIO (legacy/CDN)
+
+No SSL certificates are required for local development. The services use self-signed certificates managed by Traefik.
 
 ### Service Access
 
@@ -106,36 +117,75 @@ When running the Test environment with a configured domain:
 
 Copy `.env.Example` to `.env` and `.env.Test` (for the Test environment) and configure the following key variables:
 
+**Docker & Deployment:**
+* `COMPOSE_PROJECT_NAME` – Docker Compose project name (default: `grandlinequotes`)
 * `DOMAIN_SUFFIX` – Your domain (e.g., `example.com`)
 * `ACME_EMAIL` – Email for Let's Encrypt certificates
-* `MYSQL_ROOT_PASSWORD`, `MYSQL_PASSWORD` – Database credentials
-* `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD` – MinIO credentials
-* `GOOGLE_ALLOWED_EMAIL` – Email allowed for Google authentication in Admin panel (optional)
-* `DOZZLE_AUTH` – Basic auth credentials for Dozzle (format: `username:password`)
 
-See `.env.Example` for the complete list of available configuration options.
+**Database:**
+* `MYSQL_ROOT_PASSWORD` – MariaDB root password
+* `MYSQL_PASSWORD` – MariaDB user password
+* `MYSQL_USER` – MariaDB user (default: `grandlinequotes`)
+
+**Object Storage:**
+* `MINIO_ROOT_USER` – MinIO access key
+* `MINIO_ROOT_PASSWORD` – MinIO secret key
+* `MINIO_SECURE` – Use HTTPS for MinIO (true/false)
+* `MINIO_PUBLIC_ENDPOINT` – Public MinIO endpoint URL
+* `MINIO_PUBLIC_SECURE` – Use HTTPS for public MinIO access (true/false)
+
+**Authentication & Security:**
+* `GOOGLE_ALLOWED_EMAIL` – Email allowed for Google authentication in Admin panel (optional)
+* `DOZZLE_AUTH` – Basic auth credentials for Dozzle log viewer (format: `username:password`)
+* `LUCKYPENNY_LICENSE_KEY` – License key for LuckyPenny library
+* `PLAYINTEGRITY_SESSION_SECRET` – Secret for Play Integrity API validation
+
+**Mobile App Configuration:**
+* `APP_PACKAGE_ID` – Android/iOS package identifier
+* `APP_VERSION_NAME` – App version name
+* `APP_VERSION_CODE` – App version code (integer)
+* `ANDROID_VERSION_RANGE` – Supported Android API levels (e.g., `24-35`)
+* `IOS_VERSION` – Target iOS version
+
+**Privacy Policy:**
+* `PRIVACY_CONTROLLER_NAME` – Data controller name
+* `PRIVACY_CONTACT_EMAIL` – Contact email for privacy inquiries
+* `PRIVACY_COUNTRY` – Country of the data controller
+* `PRIVACY_LAST_UPDATED` – Last update date of privacy policy
+
+See `.env.Example` for the complete list with example values.
 
 ## Running tests
 
-The script `src/Scripts/Sandbox/run-tests.sh` prepares the environment and executes the test suite:
+The script `src/Scripts/Sandbox/run-tests.sh` prepares the environment and executes the complete test suite:
 
-1. Install **.NET SDK 8.0**.
-2. Install and configure **MariaDB**, creating the test database and the `grandlinequotes` user.
-3. Download and launch **MinIO**, creating the `quotes` bucket.
-4. Install **JDK 17** and the **Android** command-line tools required by the multiplatform client tests.
-5. Build the code, start the APIs temporarily and run both the .NET and Kotlin tests.
+1. **Install .NET SDK 8.0** if not already present.
+2. **Install and configure MariaDB** server, creating the test database and the `grandlinequotes` user with appropriate permissions.
+3. **Download and launch MinIO** server, creating the `quotes` bucket for object storage testing.
+4. **Install JDK 17** and the **Android command-line tools** (SDK 35/36) required by the Kotlin Multiplatform client tests.
+5. **Build the .NET solution** once to avoid file locking issues.
+6. **Start the API services** (REST API on port 5023, Public GraphQL API on port 5024) using the prebuilt assemblies.
+7. **Run .NET tests** across all test projects without rebuilding.
+8. **Run Kotlin Multiplatform tests** for the Android client (`assembleSandboxDebug` and `testSandboxDebugUnitTest`).
 
-The script loads `.env` and, if present, `.env.$FLAVOR` (defaults to `Sandbox`) to supply environment data. Run it with:
+The script loads environment variables from `src/DevOps/Docker-Linux/Stack/.env` and, if present, `.env.$FLAVOR` (defaults to `Sandbox`) to configure database connections, MinIO endpoints, and other service settings.
+
+To run the test suite:
 
 ```bash
 bash src/Scripts/Sandbox/run-tests.sh
 ```
 
-Superuser permissions and internet access are required.
+**Requirements:**
+* Superuser permissions (for installing packages and starting services)
+* Internet access (for downloading SDKs and dependencies)
+* Ubuntu 24.04 or compatible Linux distribution
+
+The test logs are written to `/tmp/` for debugging purposes.
 
 ## Backups
 
-`src/Scripts/Test/` contains `create-backup.sh` and `restore-backup.sh` scripts to export and restore data from MariaDB and MinIO. Each backup is stored under `backups/<timestamp>` at the repository root together with a `backup.log` or `restore.log`. Environment variables are read from `.env` and `.env.Test` (use `src/DevOps/Docker-Linux/Stack/.env.Example` as a template).
+`src/Scripts/Test/` contains `create-backup.sh` and `restore-backup.sh` scripts to export and restore data from MariaDB and MinIO. Each backup is stored under `backups/<timestamp>` at the repository root together with a `backup.log` or `restore.log`. Environment variables are read from `src/DevOps/Docker-Linux/Stack/.env` and `src/DevOps/Docker-Linux/Stack/.env.Test` (use `src/DevOps/Docker-Linux/Stack/.env.Example` as a template).
 
 To create a backup within the Docker network:
 
